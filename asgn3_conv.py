@@ -9,9 +9,9 @@ LAMBDA = 1e-4
 TRAIN_COUNT = 60000
 TEST_COUNT = 10000
 # batch size
-BATCH_SIZE = 100
+BATCH_SIZE = 50
 # number of batches to go thru
-TRAIN_STEPS = 200000
+TRAIN_STEPS = 2000
 
 
 def load_mnist(imagefile, labelfile, count):
@@ -113,17 +113,19 @@ test_images,  test_labels  = load_mnist('t10k-images-idx3-ubyte',
                                         TEST_COUNT)
 
 with tf.Session() as sess:
-    # train
-    init_step.run()
-    for i in range(TRAIN_STEPS):
-        random_selection = np.random.choice(TEST_COUNT, BATCH_SIZE)
-        batch_Is = train_images[random_selection]
-        batch_cs = train_labels[random_selection]
-        if i % 100 == 0:
-            train_accuracy = accuracy.eval(feed_dict={
-                I: batch_Is, c: batch_cs, keep_prob: 1.0})
-            print('step %d, training accuracy %g' % (i, train_accuracy))
-        train_step.run(feed_dict={I: batch_Is, c: batch_cs, keep_prob: 0.5})
+    with tf.device('/cpu:0'): # having extreme GPU problems
+        # train
+        init_step.run()
+        for i in range(TRAIN_STEPS):
+            random_selection = np.random.choice(TEST_COUNT, BATCH_SIZE)
+            batch_Is = train_images[random_selection]
+            batch_cs = train_labels[random_selection]
+            if i % 100 == 0:
+                train_accuracy = accuracy.eval(feed_dict={
+                    I: batch_Is, c: batch_cs, keep_prob: 1.0})
+                print('step %d, training accuracy %g' % (i, train_accuracy))
+            train_step.run(feed_dict={I: batch_Is, c: batch_cs, keep_prob: 0.5})
 
-    # test
-    print(sess.run(accuracy, feed_dict={I: test_images, c: test_labels, keep_prob: 1.0}))
+        # test
+        print(sess.run(accuracy, feed_dict={
+            I: test_images, c: test_labels, keep_prob: 1.0}))
