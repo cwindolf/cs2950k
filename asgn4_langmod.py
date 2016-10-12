@@ -111,10 +111,9 @@ def forward_pass(embedding, n, k, h):
     # Second for softmax
     softmax_layer = weight([h, n])
     softmax_bias  = weight([n])
-    logits = tf.nn.softmax(
-                tf.add(
-                    tf.matmul(relus, softmax_layer),
-                    softmax_bias))
+    logits = tf.add(
+                tf.matmul(relus, softmax_layer),
+                softmax_bias)
     return logits
 
 
@@ -131,12 +130,8 @@ def loss(Y, logits, n):
     Returns:
         cross entropy loss between Y's one-hots and logits
     '''
-    Y_vecs = tf.one_hot(Y, n)
-    cross_entropy = tf.reduce_mean(
-                        -tf.reduce_sum(
-                            Y_vecs * logits,
-                            reduction_indices=[1]))
-    return cross_entropy
+    return tf.reduce_mean(
+        tf.nn.sparse_softmax_cross_entropy_with_logits(logits, Y))
 
 
 def trainer(learning_rate, loss):
@@ -157,7 +152,6 @@ if __name__ == '__main__':
 
     X = tf.placeholder(tf.int64, shape=[None])
     Y = tf.placeholder(tf.int64, shape=[None])
-
 
     # *********************************************************************** #
     # Instantiate graph
@@ -180,7 +174,7 @@ if __name__ == '__main__':
 
         # Test
         xe = sess.run(cross_entropy, feed_dict={ X: test_X, Y: test_Y })
-
+        
     print('Test Perplexity:', np.exp(xe))
 
 
