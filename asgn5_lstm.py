@@ -95,11 +95,6 @@ def dropout(embeddings, keep_prob):
     return tf.nn.dropout(embeddings, keep_prob)
 
 
-def cell():
-    
-    return cell, initial_state
-
-
 def lstm(embeddings):
     cell = tf.nn.rnn_cell.BasicLSTMCell(CELL_SIZE)
     init_state = cell.zero_state(BATCH_SIZE, tf.float32)
