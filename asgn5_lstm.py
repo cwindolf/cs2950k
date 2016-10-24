@@ -17,7 +17,7 @@ BATCH_SIZE = 20
 NUM_STEPS = 20
 EPOCHS = 20
 LEARN_RATE = 1e-4
-LR_DECAY = 0.5
+LR_DECAY = 0.95
 KEEP_PROB = 0.5
 
 # *************************************************************************** #
