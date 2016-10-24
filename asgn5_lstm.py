@@ -15,7 +15,7 @@ CELL_SIZE = 256
 # Training behavior
 BATCH_SIZE = 20
 NUM_STEPS = 20
-EPOCHS = 10
+EPOCHS = 20
 LEARN_RATE = 1e-4
 LR_DECAY = 0.5
 KEEP_PROB = 0.5
@@ -196,7 +196,7 @@ if __name__ == '__main__':
                                                    init_state: this_state
                                                })
                 test_perplexity += batch_p
-            print('Test Perplexity', test_perplexity)
+            print('Test Perplexity', test_perplexity / NUM_STEPS)
             LEARN_RATE *= LR_DECAY
 
 
